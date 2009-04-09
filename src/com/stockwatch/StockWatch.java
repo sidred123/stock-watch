@@ -1,19 +1,17 @@
 package com.stockwatch;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.digester.rss.Channel;
-import org.apache.commons.digester.rss.Item;
-import org.apache.commons.digester.rss.RSSDigester;
-
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.google.gdata.client.finance.FinanceService;
 import com.google.gdata.data.finance.PortfolioEntry;
@@ -29,33 +27,40 @@ public class StockWatch extends Activity {
     public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-      setContentView(R.layout.main);
-      //PortfolioManager pm = new PortfolioManager("tttemper888@gmail.com", "tempster");
-      try
-      {
-	      List<NewsItem> newsItems = new ArrayList<NewsItem>();
-	      try
-	      {
-	    	  /*newsItems = */getNewsItems("NASDAQ", "GOOG");
-	      }
-	      catch(Exception e)
-	      {
-	    	  e.printStackTrace();  
-	      }
-		  Iterator<NewsItem> newsItemIterator = newsItems.iterator();
-		  while(newsItemIterator.hasNext())
-		  {
-		  	NewsItem newsItem = newsItemIterator.next();
-		  	System.out.println(newsItem.getTitle());
-		  	System.out.println(newsItem.getLink());
-		  	System.out.println(newsItem.getDescription());
-		  }
-      }
-      catch(Exception e)
-      {
-    	e.printStackTrace();  
-      }
-/*      TableLayout t = (TableLayout)findViewById(R.id.table1);
+		setContentView(R.layout.main);
+		String $rssUrl = NewsManager.generateURL("NASDAQ", "GOOG");
+		NewsManager newsManager = new NewsManager($rssUrl);
+		try
+		{
+			newsManager.parse();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		List<NewsItem> newsItems = newsManager.getChannel().getItems();
+		Iterator<NewsItem> newsItemIterator = newsItems.iterator();
+		TableLayout table = (TableLayout)findViewById(R.id.table1);
+		while(newsItemIterator.hasNext())
+		{
+			NewsItem newsItem = newsItemIterator.next();
+			TableRow tableRow1 = new TableRow(this);
+			TextView textView1 = new TextView(this);
+			TableRow tableRow2 = new TableRow(this);
+			TextView textView2 = new TextView(this);
+			TableRow tableRow3 = new TableRow(this);
+			TextView textView3 = new TextView(this);
+			textView1.setText(newsItem.getTitle());
+			textView2.setText(newsItem.getLink());
+			textView3.setText(newsItem.getDescription());
+	  	  	tableRow1.addView(textView1);
+	  	  	tableRow2.addView(textView2);
+	  	  	tableRow3.addView(textView3);
+	  	  	table.addView(tableRow1);
+	  	  	table.addView(tableRow2);
+	  	  	table.addView(tableRow3);
+		}
+		/*      TableLayout t = (TableLayout)findViewById(R.id.table1);
         
         PortfolioManager pm = new PortfolioManager("tttemper888@gmail.com", "tempster");
         List<StockWatchPortfolio> l1 =pm.getPortfolios();
@@ -203,24 +208,5 @@ public class StockWatch extends Activity {
 		return portfolios;
 	}
 
-public void /*List<NewsItem>*/ getNewsItems(String stockExchange, String ticker) throws Exception
-{
-	RSSDigester digester = new RSSDigester();
-	String feed = "http://www.google.com/finance?morenews=10&rating=1&q=" + stockExchange + ":" + ticker + "&output=rss";
-	URL url =  new URL(feed);
-	/*	HttpURLConnection httpSource = (HttpURLConnection)url.openConnection();
-	Channel channel = (Channel)digester.parse(httpSource.getInputStream());
-	if(channel == null)
-	{
-		throw new Exception("Cant communicate with " + url);
-	}
-	Item items[] = channel.findItems();
-	List<NewsItem> newsItems = new ArrayList<NewsItem>();
-	for(int i = 0; i < items.length; i++)
-	{
-		newsItems.add(new NewsItem(items[i]));
-	}
-	return newsItems;*/
-}
 
 }
