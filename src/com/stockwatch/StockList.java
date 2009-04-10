@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -23,23 +24,26 @@ import com.google.gdata.data.extensions.Money;
 import com.google.gdata.data.finance.PositionData;
 import com.google.gdata.data.finance.PositionEntry;
 
-public class StockList extends Activity implements OnClickListener 
-{
+public class StockList extends Activity implements OnClickListener {
     /** Called when the activity is first created. */
 	public static final int PORTFOLIO_ID = Menu.FIRST;
 	Hashtable idSymbolHash = new Hashtable();
+	Hashtable SymbolPositionObject = new Hashtable();
 	@Override
     public void onCreate(Bundle savedInstanceState) 
 	{
 		int idcount = 1;
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		ScrollView sv = (ScrollView)findViewById(R.id.baseScroll);
+		sv.setBackgroundColor(Color.rgb(0,0, 0));
+		
 		TableLayout t = (TableLayout)findViewById(R.id.table1);
 		t.setColumnStretchable(0, true);
 		t.setColumnStretchable(1, true);
         t.setColumnStretchable(2, true);
         t.setColumnStretchable(3, true);
-        
+        t.setBackgroundColor(Color.rgb(0,0, 0));
         // Let us set the headings.
         TableRow tr = new TableRow(this);
         for(int loop=0;loop<5;loop++)
@@ -86,6 +90,7 @@ public class StockList extends Activity implements OnClickListener
         	while(positionSetIterator.hasNext())
         	{
         		StockWatchPosition position = positionSetIterator.next();
+        		
         		TableRow tr1 = new TableRow(this);
        	  		TextView tv1 = new TextView(this);
        	  		String name = new String(position.getPositionEntry().getSymbol().getFullName());
@@ -102,7 +107,7 @@ public class StockList extends Activity implements OnClickListener
        	  		tv1.setOnClickListener(this);
        	  		
        	  		
-       	  		
+       	  		SymbolPositionObject.put(sname, position);
        	  		
        	  		TextView tv2 = new TextView(this);
        	  		TextView tv3 = new TextView(this);
@@ -217,7 +222,106 @@ public class StockList extends Activity implements OnClickListener
        	  		}
         	}
         }
+        String string = new String("Please Click on stocks to get \nadditional Information...");
+        Context context = getApplicationContext();
+		int duration = Toast.LENGTH_LONG;
+		Toast toast = Toast.makeText(context, string, duration);
+		toast.show();
+        
     }	
+	
+	public void onClick(View v)
+	{
+		Integer id = new Integer(v.getId());
+		// Let us recover the symbol from this
+		String symbol = (String)idSymbolHash.get(id);
+		Context context = getApplicationContext();
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(context, symbol, duration);
+		//toast.show();
+		
+		// Obtaining the position object first
+		StockWatchPosition position = (StockWatchPosition)SymbolPositionObject.get(symbol);
+	
+		
+		// Getting the vars
+		String fname = new String(position.getPositionEntry().getSymbol().getFullName());
+		int count = (int)position.getStockCount();	
+		PositionEntry positionEntry = position.getPositionEntry(); 
+  		PositionData pdata = positionEntry.getPositionData();
+  		String exchange = positionEntry.getSymbol().getExchange();
+  		String percentgain = Double.toString(pdata.getGainPercentage() * 100.0);
+  		String originalprice="",lastprice="",daysgain="",totalgain="";
+  		if(!(pdata.getCostBasis() == null))
+	  		{
+   	  		for (int i = 0; i < pdata.getCostBasis().getMoney().size(); i++)
+   	  		{
+   	         Money m = pdata.getCostBasis().getMoney().get(i);
+   	         System.out.printf("\t\tThis position cost %.2f %s.\n", m.getAmount(), m.getCurrencyCode());
+   	         originalprice = Double.toString(m.getAmount()/position.getStockCount());
+   	  		}
+	  			
+	  		}
+	  		
+	  		if(!(pdata.getMarketValue() == null))
+	  		{
+	  			for (int i = 0; i < pdata.getMarketValue().getMoney().size(); i++) 
+	  			{
+   	  			Money m = pdata.getMarketValue().getMoney().get(i);
+       	        System.out.printf("\t\tThis position is worth %.2f %s.\n", m.getAmount(), m.getCurrencyCode());
+       	        lastprice = Double.toString(m.getAmount()/position.getStockCount());
+       	    }
+	  		}// marketvalue ends
+	  	
+   	  	if(!(pdata.getDaysGain() == null))
+   	  	{
+   	  		for (int i = 0; i < pdata.getDaysGain().getMoney().size(); i++) 
+   	  		{
+	  				Money money = pdata.getDaysGain().getMoney().get(i);
+	  				daysgain = Double.toString(money.getAmount()/position.getStockCount());
+   	  		}
+   	  	}// days gain ends
+   	  	
+   	  	if(!(pdata.getGain() == null))
+   	  	{
+       	  	for (int i = 0; i < pdata.getGain().getMoney().size(); i++) 
+	  			{
+	  				Money money = pdata.getGain().getMoney().get(i);
+	  				System.out.printf("\t\tThis position has a total gain of %.2f %s.\n", money.getAmount(), money.getCurrencyCode());
+	  				totalgain = Double.toString(money.getAmount()/position.getStockCount());
+	  			}
+   	  		
+   	  	}
+	
+		
+		
+		// Let us go to the details page
+		Intent intent = new Intent(this, Details.class);
+		//intent.setClassName("com.stockwatch","com.stockwatch.Details");
+		intent.putExtra("stockcode", symbol);
+		intent.putExtra("fullname", fname);
+		intent.putExtra("stockcount", Integer.toString(count));
+		intent.putExtra("exchange",exchange );
+		intent.putExtra("percentgain",percentgain );
+		intent.putExtra("lastprice",lastprice );
+		intent.putExtra("originalprice",originalprice );
+		intent.putExtra("daysgain",daysgain );
+		intent.putExtra("totalgain",totalgain);
+		startActivity(intent);
+		
+		
+	}
+
+	public void onResume()
+	{
+		super.onResume();
+		String string = new String("Please Click on stocks to get \nadditional Information...");
+        Context context = getApplicationContext();
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(context, string, duration);
+		toast.show();
+		
+	}
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) 
@@ -239,17 +343,4 @@ public class StockList extends Activity implements OnClickListener
        
         return super.onOptionsItemSelected(item);
     }
-	
-	public void onClick(View v)
-	{
-		Integer id = new Integer(v.getId());
-		// Let us recover the symbol from this
-		String symbol = (String)idSymbolHash.get(id);
-		 Context context = getApplicationContext();
-		int duration = Toast.LENGTH_SHORT;
-		Toast toast = Toast.makeText(context, symbol, duration);
-		toast.show();
-		
-		
-	}
 }
