@@ -14,16 +14,22 @@ import com.google.gdata.util.ServiceException;
 
 public class PortfolioManager 
 {
-	private FinanceService portfolioService;
-	private GoogleAccountConnector gac;
+	private static PortfolioManager portfolioManager;
+	private static FinanceService portfolioService;
+	private static GoogleAccountConnector gac;
 	private String portfolioURL ="http://finance.google.com/finance/feeds/default/portfolios";
-								  
-	public PortfolioManager(String username, String password)
+	private static List<StockWatchPortfolio> stockWatchPortfolios = 	new ArrayList<StockWatchPortfolio>(); 						  
+	public static PortfolioManager getPortfolioManager(String username, String password)
 	{
-		portfolioService = new FinanceService("StockWatchService");
-		gac = new GoogleAccountConnector();
-		String authenticationToken = gac.getAuthToken(username, password);
-		portfolioService.setUserToken(authenticationToken);
+		if(portfolioManager == null)
+		{
+			portfolioService = new FinanceService("StockWatchService");
+			gac = new GoogleAccountConnector();
+			String authenticationToken = gac.getAuthToken(username, password);
+			portfolioService.setUserToken(authenticationToken);
+			portfolioManager = new PortfolioManager();
+		}
+		return portfolioManager;
 	}
 
 	public FinanceService getPortfolioService()
@@ -39,32 +45,39 @@ public class PortfolioManager
 	//This method by default also returns the performance details of the portfolios.
 	public List<StockWatchPortfolio> getPortfolios()
 	{
-		try
+		if(stockWatchPortfolios.isEmpty())
 		{
-			PortfolioFeed portfolioFeed = portfolioService.getFeed(new URL(portfolioURL+"?returns=true"), PortfolioFeed.class);
-			List<PortfolioEntry> portfolios = portfolioFeed.getEntries();
-			List<StockWatchPortfolio> stockWatchPortfolios = new ArrayList<StockWatchPortfolio>();
-			for(Iterator portfolioIterator = portfolios.iterator(); portfolioIterator.hasNext();)
+			try
 			{
-				StockWatchPortfolio stockWatchPortfolio = new StockWatchPortfolio((PortfolioEntry)portfolioIterator.next()); 
-				stockWatchPortfolio.setManager(this);
-				stockWatchPortfolios.add(stockWatchPortfolio);
+				PortfolioFeed portfolioFeed = portfolioService.getFeed(new URL(portfolioURL+"?returns=true"), PortfolioFeed.class);
+				List<PortfolioEntry> portfolios = portfolioFeed.getEntries();
+				for(Iterator<PortfolioEntry> portfolioIterator = portfolios.iterator(); portfolioIterator.hasNext();)
+				{
+					StockWatchPortfolio stockWatchPortfolio = new StockWatchPortfolio((PortfolioEntry)portfolioIterator.next()); 
+					stockWatchPortfolio.setManager(this);
+					stockWatchPortfolios.add(stockWatchPortfolio);
+				}
+				return stockWatchPortfolios;
 			}
-			return stockWatchPortfolios;
+			catch(MalformedURLException e)
+			{
+				e.printStackTrace();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			} 
+			catch (ServiceException e) 
+			{
+				e.printStackTrace();
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return null;
 		}
-		catch(MalformedURLException e)
-		{
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (ServiceException e) 
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return stockWatchPortfolios;
 	}
 	
 	// Time this method, depending on how much time it takes we would have to change the implementation to get portfolio locally. 
