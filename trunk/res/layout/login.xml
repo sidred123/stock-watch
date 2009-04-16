@@ -1,41 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:orientation="vertical">
-		
-		<LinearLayout
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:orientation="horizontal">
-			<TextView android:id="@+id/android:username"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/username"
-		    />
-		    <EditText id="@+id/android:unEntry"
-				android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-			/>
-		</LinearLayout>
-		
-		<LinearLayout
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:orientation="horizontal">
-			<TextView android:id="@+id/android:pwd"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/pwd"
-		    />
-		    <EditText id="@+id/android:pwdEntry"
-				android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:password="true"
-			/>
-		</LinearLayout>
-		<Button android:id="@+id/loginButton"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="Login"/>
-</LinearLayout>
+<AbsoluteLayout
+android:id="@+id/absolute1"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+<TextView
+android:id="@+id/android:username"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="@string/username"
+android:layout_x="62px"
+android:layout_y="101px"
+>
+</TextView>
+<EditText
+android:id="@+id/android:unEntry"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textSize="18sp"
+android:layout_x="145px"
+android:layout_y="86px"
+>
+</EditText>
+<TextView
+android:id="@+id/android:pwd"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="@string/pwd"
+android:layout_x="62px"
+android:layout_y="153px"
+>
+</TextView>
+<EditText
+android:id="@+id/android:pwdEntry"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textSize="18sp"
+android:layout_x="145px"
+android:layout_y="137px"
+>
+</EditText>
+<Button
+android:id="@+id/loginButton"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginLeft="10px"
+android:layout_marginRight="10px"
+android:text="Login"
+android:layout_x="118px"
+android:layout_y="197px"
+>
+</Button>
+<CheckBox
+android:id="@+id/remember"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Remember Me"
+android:layout_x="80px"
+android:layout_y="256px"
+>
+</CheckBox>
+</AbsoluteLayout>
