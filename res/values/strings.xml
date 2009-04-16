@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, StockWatch</string>
     <string name="app_name">Stock Watch</string>
+    <string name="username">User Name</string>
+    <string name="pwd">Password</string>
+    <string name="menu_portfolio">Portfolios</string>
 </resources>
