@@ -247,7 +247,7 @@ public class StockList extends Activity implements OnClickListener {
 		// Getting the vars
 		String fname = new String(position.getPositionEntry().getSymbol().getFullName());
 		int count = (int)position.getStockCount();	
-		PositionEntry positionEntry = position.getPositionEntry(); 
+		PositionEntry positionEntry = position.getPositionEntry();
   		PositionData pdata = positionEntry.getPositionData();
   		String exchange = positionEntry.getSymbol().getExchange();
   		String percentgain = Double.toString(pdata.getGainPercentage() * 100.0);

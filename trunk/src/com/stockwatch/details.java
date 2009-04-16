@@ -1,49 +1,28 @@
 package com.stockwatch;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import android.app.Activity;
-import android.app.ListActivity;
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.webkit.WebView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gdata.client.finance.FinanceService;
-import com.google.gdata.data.extensions.Money;
-import com.google.gdata.data.finance.DaysGain;
-import com.google.gdata.data.finance.PortfolioEntry;
-import com.google.gdata.data.finance.PortfolioFeed;
-import com.google.gdata.data.finance.PositionData;
-import com.google.gdata.data.finance.PositionEntry;
-import com.google.gdata.util.ServiceException;
+import com.stockwatch.news.NewsItem;
+import com.stockwatch.news.NewsManager;
 
 
-public class details extends Activity
+public class Details extends Activity
 {
 	@Override
     public void onCreate(Bundle savedInstanceState) 
 	{
-		
-		
-			
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.details);
 		ScrollView sv = (ScrollView)findViewById(R.id.baseScroll);
 		sv.setBackgroundColor(Color.rgb(0,0, 0));
 		String stockcode = "";
@@ -69,13 +48,14 @@ public class details extends Activity
 		table.addView(tr);
 		
 		String key="",value="";
+		String ticker = "";
 		for(int loop=1;loop<=9;loop++)
 		{
 			switch(loop)
 			{
 				
 				case 1: key = "Name"; value = somedata.getString("fullname");break;
-				case 2: key = "Symbol "; value = somedata.getString("stockcode");break;
+				case 2: key = "Symbol "; value = somedata.getString("stockcode");ticker = value;break;
 				case 3: key = "Stock Count"; value = somedata.getString("stockcount");break;
 				case 4: key = "Exchange"; value=somedata.getString("exchange");break;
 				case 5: key = "Last Price"; value=somedata.getString("lastprice");break;
@@ -97,27 +77,51 @@ public class details extends Activity
 			
 			tv1.setTextSize(13);
 			tv2.setTextSize(14);
-			
-			
 		}
-//		tr = new TableRow(this);
-//		TextView tvx = new TextView(this);
-//		tvx.setText(" ");
-//		tr.addView(tvx);
-//		Button b1 = new Button(this);
-//		b1.setText("Edit");
-//		tr.addView(b1);
-//		TextView tvx2 = new TextView(this);
-//		tvx2.setText(" ");
-//		tr.addView(tvx2);
-//		Button b2 = new Button(this);
-//		b2.setText("Back");
-//		tr.addView(b2);
-//		
-//		
-//		table.addView(tr);
 		
-
+		
+		ScrollView newsScroll = (ScrollView)findViewById(R.id.baseScroll);
+		newsScroll.setBackgroundColor(Color.rgb(0,0, 0));
+		
+		TableLayout newsItemTable = (TableLayout)findViewById(R.id.table1);
+		newsItemTable.setColumnStretchable(0, true);
+		newsItemTable.setColumnStretchable(1, true);
+		newsItemTable.setBackgroundColor(Color.rgb(0,0, 0));
+		
+		TableRow newsTableTitleRow = new TableRow(this);
+		TextView newsTableTitleText = new TextView(this);
+		newsTableTitleText.setText("Stock Details");
+		newsTableTitleText.setTextSize(16);
+		newsTableTitleRow.addView(newsTableTitleText);
+		newsTableTitleRow.setBackgroundColor(Color.argb(200,102, 0, 0));
+		
+		newsItemTable.addView(newsTableTitleRow);
+		
+		String newsUrl = NewsManager.generateURL(ticker);
+		NewsManager newsManager = new NewsManager(newsUrl);
+		try
+		{
+			newsManager.parse();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		List<NewsItem> newsItems = newsManager.getChannel().getItems();
+		Iterator<NewsItem> newsItemIterator = newsItems.iterator();
+		while(newsItemIterator.hasNext())
+		{
+			NewsItem newsItem = newsItemIterator.next();
+			TableRow newsTableItemRow = new TableRow(this);
+			TextView newsTableItemText = new TextView(this);
+			newsTableItemText.setText(newsItem.getTitle());
+			newsTableItemText.setTextSize(16);
+			newsTableItemRow.addView(newsTableItemText);
+			newsItemTable.addView(newsTableItemRow);
+		}
+		
+		//WebView webView = (WebView)findViewById(R.id.webview);
+		//webView.getSettings().setJavaScriptEnabled(true);
+		//webView.loadUrl("http://www.google.com");
 	}// oncreate function ends
-
 }// class declaration ends
