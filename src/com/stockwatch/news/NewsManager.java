@@ -161,9 +161,9 @@ public class NewsManager extends DefaultHandler
         this.text.append(ch, start, length);
     }
     
-    public static String generateURL(String market, String ticker)
+    public static String generateURL(/*String market,*/ String ticker)
     {
-    	return "http://www.google.com/finance?morenews=10&rating=1&q=" + market + ":" + ticker + "&output=rss";
+    	return "http://www.google.com/finance?morenews=10&rating=1&q=" + ticker + "&output=rss";
     }
     
     private String urlString;
