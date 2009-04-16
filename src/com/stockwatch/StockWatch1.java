@@ -72,7 +72,7 @@ public class StockWatch1 extends Activity implements OnClickListener {
         tr.setBackgroundColor(Color.rgb(102, 0, 0));
         t.addView(tr);
 	  	
-        PortfolioManager portfolioManager = new PortfolioManager("tttemper888@gmail.com", "tempster");
+        PortfolioManager portfolioManager = PortfolioManager.getPortfolioManager("tttemper888@gmail.com", "tempster");
         List<StockWatchPortfolio> portfolioList =portfolioManager.getPortfolios();
         if(portfolioList == null)
         {
