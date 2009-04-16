@@ -29,6 +29,7 @@ public class StockList extends Activity implements OnClickListener {
 	public static final int PORTFOLIO_ID = Menu.FIRST;
 	Hashtable idSymbolHash = new Hashtable();
 	Hashtable SymbolPositionObject = new Hashtable();
+	Boolean toggle = false;
 	@Override
     public void onCreate(Bundle savedInstanceState) 
 	{
@@ -119,6 +120,17 @@ public class StockList extends Activity implements OnClickListener {
        	  		tr1.addView(tv4);
        	  		tr1.addView(tv5);
        	  		t.addView(tr1);
+       	  		if(toggle == false)
+       	  		{
+       	  			tr1.setBackgroundColor(Color.argb(90,102, 0, 0));
+       	  			toggle = true;
+       	  		}
+       	  		else
+       	  		{
+	       	  		tr1.setBackgroundColor(Color.argb(140,102, 0, 0));
+	   	  			toggle = false;
+       	  		}
+       	  		
        	  		tv1.setTextSize(14);
        	  		tv2.setTextSize(11);
        	  		tv3.setTextSize(14);
