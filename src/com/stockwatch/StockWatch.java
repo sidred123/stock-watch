@@ -34,17 +34,17 @@ public class StockWatch extends Activity implements OnClickListener
         TextView tvU = (TextView)findViewById(R.id.android_username);
         tvU.setTextColor(Color.rgb(255,255,255));
         tvU.setTextSize(16);
-        tvU.setBackgroundColor(Color.rgb(0,0,255));
+        tvU.setBackgroundColor(Color.rgb(0,52,102));
         //tvU.setBackgroundColor(Color.rgb(102,0,0));
         
         TextView tvP = (TextView)findViewById(R.id.android_pwd);
-        tvP.setBackgroundColor(Color.rgb(0,0,255));
+        tvP.setBackgroundColor(Color.rgb(0,52,102));
         //tvP.setBackgroundColor(Color.rgb(102,0,0));
         tvP.setTextSize(16);
         tvP.setTextColor(Color.rgb(255,255,255));
     
         CheckBox ch = (CheckBox)findViewById(R.id.remember);
-        ch.setBackgroundColor(Color.rgb(0,0,255));
+        ch.setBackgroundColor(Color.rgb(0,52,102));
     }
 
 	public void onClick(View arg0) 
