@@ -10,7 +10,7 @@ android:id="@+id/android:username"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="@string/username"
-android:layout_x="62px"
+android:layout_x="22px"
 android:layout_y="101px"
 >
 </TextView>
@@ -18,8 +18,8 @@ android:layout_y="101px"
 android:id="@+id/android:unEntry"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
-android:textSize="18sp"
-android:layout_x="145px"
+android:textSize="14sp"
+android:layout_x="105px"
 android:layout_y="86px"
 >
 </EditText>
@@ -29,7 +29,7 @@ android:id="@+id/android:pwd"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:text="@string/pwd"
-android:layout_x="62px"
+android:layout_x="22px"
 android:layout_y="153px"
 >
 </TextView>
@@ -38,8 +38,8 @@ android:id="@+id/android:pwdEntry"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:password="true"
-android:textSize="18sp"
-android:layout_x="145px"
+android:textSize="16sp"
+android:layout_x="105px"
 android:layout_y="137px"
 >
 </EditText>
@@ -61,6 +61,21 @@ android:layout_height="wrap_content"
 android:text="Remember Me"
 android:layout_x="80px"
 android:layout_y="256px"
+
 >
 </CheckBox>
+<TextView
+android:id="@+id/android:error"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Error!\nYour Username or password\nare incorrect."
+android:layout_x="50px"
+android:textSize="18sp"
+android:layout_y="300px"
+
+>
+</TextView>
+
+
+
 </AbsoluteLayout>
